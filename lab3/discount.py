@@ -14,5 +14,4 @@ def best_purchase(prices: list, discount):
     return min_sum
 
 
-prices = [10000, 1, 0]
-print(best_purchase(prices, 33))
+
