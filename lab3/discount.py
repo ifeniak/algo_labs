@@ -1,4 +1,4 @@
-import collections
+import random
 
 
 def read_input():
@@ -18,16 +18,32 @@ def write_output():
 
 
 def best_purchase(prices: list, discount):
-    prices.sort()
-    prices = collections.deque(prices)
-    min_sum = 0
-    for _ in range(len(prices) // 3):
-        min_sum += prices.popleft()
-        min_sum += prices.popleft()
-        min_sum += prices.pop() * (100 - discount) / 100
-    if prices is not None:
-        min_sum += sum(prices)
-    return "%.2f" % min_sum
+    real_discount = (100 - discount) / 100
+    distribution = create_counting(prices)
+    low_num = len(prices) - (len(prices) // 3)
+    i = 0
+    while distribution[i] < low_num:
+        i += 1
+    pivot = distribution.index(distribution[i]) + min(prices)
+    result = pivot * (distribution[i] - low_num) * real_discount
+    if i != 0:
+        result += pivot * (low_num - distribution[i - 1])
+    else:
+        result += pivot * low_num
+    result += sum(price for price in prices if price < pivot)
+    result += sum(price * real_discount for price in prices if price > pivot)
+    return "%.2f" % result
 
 
+def create_counting(prices: list):
+    high_bound = max(prices)
+    low_bound = min(prices)
+    distribution = [0] * (high_bound - low_bound + 1)
+    for price in prices:
+        distribution[price - low_bound] += 1
+    for i in range(1, len(distribution)):
+        distribution[i] += distribution[i - 1]
+    return distribution
+
+print(best_purchase([1, 1, 1], 33))
 write_output()

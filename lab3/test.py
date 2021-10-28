@@ -15,18 +15,15 @@ class TestBestPurchase(unittest.TestCase):
         self.discount_3 = 33
 
     def test_default_cases(self):
-        self.assertEqual(best_purchase(self.price_1, self.discount_1), 207.00)
-        self.assertEqual(best_purchase(self.price_2, self.discount_2), 15.00)
-        self.assertEqual(best_purchase(self.price_3, self.discount_3), 2.67)
-
-    def test_empty_case(self):
-        self.assertEqual(best_purchase([], 10), 0)
+        self.assertEqual(best_purchase(self.price_1, self.discount_1), "207.00")
+        self.assertEqual(best_purchase(self.price_2, self.discount_2), "15.00")
+        self.assertEqual(best_purchase(self.price_3, self.discount_3), "2.67")
 
     def test_little_case(self):
-        self.assertEqual(best_purchase([100, 150], 50), 250)
+        self.assertEqual(best_purchase([100, 150], 50), "250.00")
 
     def test_equal_case(self):
-        self.assertEqual(best_purchase([1, 1, 1, 1], 100), 3)
+        self.assertEqual(best_purchase([1, 1, 1, 1], 100), "3.00")
 
 
 if __name__ == '__main__':
