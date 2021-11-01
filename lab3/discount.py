@@ -18,32 +18,31 @@ def write_output():
 
 
 def best_purchase(prices: list, discount):
-    real_discount = (100 - discount) / 100
-    distribution = create_counting(prices)
-    low_num = len(prices) - (len(prices) // 3)
-    i = 0
-    while distribution[i] < low_num:
-        i += 1
-    pivot = distribution.index(distribution[i]) + min(prices)
-    result = pivot * (distribution[i] - low_num) * real_discount
-    if i != 0:
-        result += pivot * (low_num - distribution[i - 1])
+    random.shuffle(prices)
+    ideal_pivot_idx = len(prices) - (len(prices) // 3) - 1
+    pivot_idx = find_pivot(prices, ideal_pivot_idx, 0, len(prices) - 1)
+    return "%.2f" % (sum(prices[:pivot_idx + 1]) + sum(prices[pivot_idx + 1:]) * (100 - discount) / 100)
+
+
+def partition(prices, left, right):
+    pivot = prices[right]
+    i = left
+    for j in range(left, right):
+        if prices[j] < pivot:
+            prices[j], prices[i] = prices[i], prices[j]
+            i += 1
+    prices[right], prices[i] = prices[i], prices[right]
+    return i
+
+
+def find_pivot(prices, ideal_pivot_idx, left, right):
+    pivot_idx = partition(prices, left, right)
+    if pivot_idx > ideal_pivot_idx:
+        return find_pivot(prices, ideal_pivot_idx, left, pivot_idx - 1)
+    elif pivot_idx < ideal_pivot_idx:
+        return find_pivot(prices, ideal_pivot_idx, pivot_idx + 1, right)
     else:
-        result += pivot * low_num
-    result += sum(price for price in prices if price < pivot)
-    result += sum(price * real_discount for price in prices if price > pivot)
-    return "%.2f" % result
+        return pivot_idx
 
 
-def create_counting(prices: list):
-    high_bound = max(prices)
-    low_bound = min(prices)
-    distribution = [0] * (high_bound - low_bound + 1)
-    for price in prices:
-        distribution[price - low_bound] += 1
-    for i in range(1, len(distribution)):
-        distribution[i] += distribution[i - 1]
-    return distribution
-
-print(best_purchase([1, 1, 1], 33))
 write_output()
