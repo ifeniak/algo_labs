@@ -8,7 +8,7 @@ def tarjan(graph: Graph):
 
 
 def dfs(graph: Graph, start_element):
-    checking_stack = [].
+    checking_stack = []
     visited = []
     on_stack = []
     id_counter = -1
