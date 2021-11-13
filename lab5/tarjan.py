@@ -10,37 +10,37 @@ def tarjan(graph: Graph):
 def dfs(graph: Graph, start_element):
     checking_stack = []
     visited = []
-    on_stack = [False] * len(graph.vertices)
+    on_stack = []
     ids = {}
     low_links = []
-    id_counter = 0
+    id_counter = -1
     for vertex in graph.vertices:
         if vertex not in visited:
             checking_stack.append(vertex)
             while checking_stack:
                 vertex = checking_stack.pop()
+
                 if vertex not in visited:
-                    ids[vertex] = id_counter
-                    low_links.append(id_counter)
-                    on_stack[id_counter] = True
                     id_counter += 1
+                    ids[vertex] = id_counter
+
+                    low_links.append(id_counter)
+                    on_stack.append(id_counter)
                     visited.append(vertex)
                     checking_stack += graph.vertices[vertex]
-                elif on_stack[ids[vertex]]:
-                    prev_id = id_counter - 1
-                    lowest_link = min(low_links[ids[vertex]], low_links[prev_id])
-                    if lowest_link == low_links[ids[vertex]]:
-                        for i in range(ids[vertex], len(on_stack)):
-                            if on_stack[i]:
-                                low_links[i] = lowest_link
-                                on_stack[i] = False
+
+                elif ids[vertex] in on_stack:
+                    lowest_link = min(low_links[ids[vertex]], low_links[id_counter])
+                    for i in range(len(on_stack) - 1, ids[vertex] - 1, -1):
+                        low_links[on_stack[i]] = lowest_link
+                        on_stack.pop()
 
     return ids, low_links
 
 
 graph2 = Graph([
     ('s', 't'),
-    ('u', 't',),
+    ('u', 't'),
     ('u', 'v'),
     ('s', 'w'),
     ('w', 's'),

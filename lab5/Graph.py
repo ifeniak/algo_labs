@@ -1,4 +1,3 @@
-from lab5.Vertex import Vertex
 
 
 class Graph:
