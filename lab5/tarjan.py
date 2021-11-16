@@ -7,11 +7,10 @@ def tarjan(graph: Graph):
     low_link = []
 
 
-def dfs(graph: Graph, start_element):
+def dfs(graph: Graph):
     checking_stack = []
     visited = []
     on_stack = []
-    id_counter = -1
     scc = []
     for vertex in graph.vertices:
         if vertex not in visited:
@@ -20,17 +19,15 @@ def dfs(graph: Graph, start_element):
                 vertex = checking_stack.pop()
 
                 if vertex not in visited:
-                    id_counter += 1
                     on_stack.append(vertex)
                     visited.append(vertex)
                     checking_stack += graph.vertices[vertex]
 
                 elif vertex in on_stack:
-                    current_css = [vertex]
+                    current_scc = [vertex]
                     while (elem := on_stack.pop()) != vertex:
-                        current_css.append(elem)
-                    scc.append(current_css)
-
+                        current_scc.append(elem)
+                    scc.append(current_scc)
     return scc
 
 
@@ -50,4 +47,4 @@ graph2 = Graph([
     ('y', 'z'),
     ('y', 'l')
     ])
-print(dfs(graph2, 's'))
+print(dfs(graph2))
