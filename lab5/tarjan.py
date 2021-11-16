@@ -2,12 +2,6 @@ from lab5.Graph import Graph
 
 
 def tarjan(graph: Graph):
-    start_elem = list(graph.vertices)[0]
-    ids = dfs(graph, start_elem)
-    low_link = []
-
-
-def dfs(graph: Graph):
     checking_stack = []
     visited = []
     on_stack = []
@@ -44,7 +38,6 @@ graph2 = Graph([
     ('z', 'v'),
     ('w', 'x'),
     ('x', 'y'),
-    ('y', 'z'),
-    ('y', 'l')
+    ('y', 'z')
     ])
-print(dfs(graph2))
+print(tarjan(graph2))
