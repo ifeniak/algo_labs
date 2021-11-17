@@ -1,72 +1,80 @@
 import unittest
 
 from lab5.Graph import Graph
-from lab5.tarjan import tarjan
+from lab5.tarjan import tarjan_new
 
 
 class TestBestPurchase(unittest.TestCase):
     def setUp(self) -> None:
-        self.tarjan_1_graph = Graph([
-            (0, 3),
-            (1, 4),
+        self.simple_graph = Graph([
+            (0, 1),
+            (1, 0),
+            (0, 2),
             (4, 2),
-            (5, 0),
             (5, 4),
-            (5, 1),
-            (1, 2),
-            (3, 1)
+            (3, 5),
+            (2, 3),
+            (3, 1),
+            (3, 6)
         ])
 
         self.cormen_1_graph = Graph([
             ('s', 't'),
-            ('s', 'y'),
+            ('u', 't'),
+            ('u', 'v'),
+            ('s', 'w'),
+            ('w', 's'),
             ('t', 'x'),
-            ('t', 'y'),
-            ('t', 'z'),
-            ('x', 't'),
-            ('y', 'x'),
+            ('x', 'u'),
+            ('u', 'y'),
+            ('v', 'y'),
+            ('z', 'v'),
+            ('w', 'x'),
+            ('x', 'y'),
             ('y', 'z'),
-            ('z', 's'),
-            ('z', 'x')
         ])
 
         self.cormen_2_graph = Graph([
             ('s', 't'),
-            ('s', 'y'),
+            ('u', 't'),
+            ('u', 'v'),
+            ('s', 'w'),
+            ('w', 's'),
             ('t', 'x'),
-            ('t', 'y'),
-            ('t', 'z'),
-            ('x', 't'),
-            ('y', 'x'),
+            ('x', 'u'),
+            ('u', 'y'),
+            ('v', 'y'),
+            ('z', 'v'),
+            ('w', 'x'),
+            ('x', 'y'),
             ('y', 'z'),
-            ('z', 's'),
-            ('z', 'x')
+            ('y', 'l')
         ])
 
-        self.simple_positive_cycle_graph = Graph([
-            ('a', 'b'),
-            ('b', 'a'),
-            ('b', 'c'),
-            ('c', 'a')
+        self.simple_graph_with_isolated_elements = Graph([
+            (0, 1),
+            (1, 0),
+            (0, 2),
+            (4, 2),
+            (5, 4),
+            (3, 5),
+            (2, 3),
+            (3, 1),
+            (3, 6),
+            (100, 1000)
         ])
 
-        self.little_graph = Graph([
-            ('a', 'b', 2)
-        ])
-    def test_non_negative_case(self):
-        self.assertEqual(tarjan(self.tarjan_1_graph), [[1, 2], [5, 3]])
+    def test_simple_case(self):
+        self.assertEqual(tarjan_new(self.simple_graph), [[6], [0, 4, 5, 3, 2, 1]])
 
-    def test_normal_case(self):
-        self.assertEqual(tarjan(self.tarjan_1_graph), [['q', 'f', 's'], ['r']])
+    def test_only_sccs_case(self):
+        self.assertEqual(tarjan_new(self.cormen_1_graph), [['v', 'z', 'y'], ['t', 'u', 'x'], ['s', 'w']])
 
-    def test_negative_cycle(self):
-        self.assertEqual(tarjan(self.cormen_2_graph), False)
+    def test_sccs_with_free_element(self):
+        self.assertEqual(tarjan_new(self.cormen_2_graph), [['l'], ['v', 'z', 'y'], ['t', 'u', 'x'], ['s', 'w']])
 
-    def test_positive_cycle(self):
-        self.assertEqual(tarjan(self.simple_positive_cycle_graph), 4)
-
-    def test_little_case(self):
-        self.assertEqual(tarjan(self.little_graph), [['4', '6', 'ss', 'a'], ['3', 'd', 'f'], ['e']])
+    def test_forest_case(self):
+        self.assertEqual(tarjan_new(self.simple_graph_with_isolated_elements), [[6], [0, 4, 5, 3, 2, 1], [1000], [100]])
 
 
 if __name__ == '__main__':

@@ -1,43 +1,35 @@
 from lab5.Graph import Graph
 
 
-def tarjan(graph: Graph):
-    checking_stack = []
+def tarjan_new(graph: Graph):
     visited = []
     on_stack = []
+    ids = {}
+    low_links = {}
     scc = []
+    id_counter = 0
+
+    def dfs(source, id_counter):
+        if source not in visited:
+            ids[source] = id_counter
+            low_links[source] = id_counter
+            id_counter += 1
+            visited.append(source)
+            on_stack.append(source)
+
+            for child in graph.vertices[source]:
+                if child not in visited:
+                    dfs(child, id_counter)
+                    low_links[source] = min(low_links[child], low_links[source])
+                elif child in on_stack:
+                    low_links[source] = min(low_links[child], low_links[source])
+
+            if low_links[source] == ids[source]:
+                current_scc = [source]
+                while (elem := on_stack.pop()) != source:
+                    current_scc.append(elem)
+                scc.append(current_scc)
+
     for vertex in graph.vertices:
-        if vertex not in visited:
-            checking_stack.append(vertex)
-            while checking_stack:
-                vertex = checking_stack.pop()
-
-                if vertex not in visited:
-                    on_stack.append(vertex)
-                    visited.append(vertex)
-                    checking_stack += graph.vertices[vertex]
-
-                elif vertex in on_stack:
-                    current_scc = [vertex]
-                    while (elem := on_stack.pop()) != vertex:
-                        current_scc.append(elem)
-                    scc.append(current_scc)
+        dfs(vertex, id_counter)
     return scc
-
-
-graph2 = Graph([
-    ('s', 't'),
-    ('u', 't'),
-    ('u', 'v'),
-    ('s', 'w'),
-    ('w', 's'),
-    ('t', 'x'),
-    ('x', 'u'),
-    ('u', 'y'),
-    ('v', 'y'),
-    ('z', 'v'),
-    ('w', 'x'),
-    ('x', 'y'),
-    ('y', 'z')
-    ])
-print(tarjan(graph2))
